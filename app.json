@@ -1,0 +1,20 @@
+{
+  "name": "Rainbow QR Code Generator",
+  "description": "A beautiful QR code generator with rainbow gradient effects",
+  "repository": "https://github.com/OmKadane/QR-CODE-GENERATOR",
+  "keywords": ["python", "flask", "qrcode", "rainbow"],
+  "env": {
+    "FLASK_ENV": {
+      "description": "Environment setting for Flask",
+      "value": "production"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    },
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+} 
