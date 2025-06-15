@@ -3,7 +3,7 @@
   publish = "."
 
 [build.environment]
-  PYTHON_VERSION = "3.8.18"
+  PYTHON_VERSION = "3.7.9"
   PIP_CACHE_DIR = ".pip-cache"
   PIP_NO_CACHE_DIR = "false"
 
