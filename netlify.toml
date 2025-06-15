@@ -1,8 +1,16 @@
 [build]
-  command = "pip install -r requirements.txt"
+  command = "pip install -r requirements.txt && pip install gunicorn"
   publish = "."
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ./"
+
+[build.environment]
+  PYTHON_VERSION = "3.9.18"
+  PIP_CACHE_DIR = ".pip-cache"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200 
+  status = 200
+
+[[plugins]]
+  package = "@netlify/plugin-lighthouse" 
