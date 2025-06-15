@@ -6,6 +6,7 @@
     "build": "python3.9 -m pip install --upgrade pip && python3.9 -m pip install -r requirements.txt"
   },
   "dependencies": {
-    "sharp": "^0.32.6"
+    "sharp": "^0.32.6",
+    "canvas": "^2.11.2"
   }
 } 
