@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Rainbow QR Code Generator",
   "scripts": {
-    "build": "python -m pip install --upgrade pip && pip install -r requirements.txt"
+    "build": "python3.9 -m pip install --upgrade pip && python3.9 -m pip install -r requirements.txt"
   },
   "dependencies": {
     "sharp": "^0.32.6"
