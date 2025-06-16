@@ -1,3 +1,4 @@
+# Import libraries
 import qrcode
 from PIL import Image, ImageDraw, ImageFont
 import requests
@@ -149,9 +150,10 @@ def main():
     # Data to encode in the QR code
     data = "https://example.com"  # Replace with your desired URL
     output_path = "qr_code_output.png"  # Default output path
+    # profile_picture_url = None  # Optional: Add your profile picture URL here if needed
     
     try:
-        create_rainbow_qr_code(data, output_path)
+        create_rainbow_qr_code(data, output_path) # Removed profile_picture_url
         print(f"QR code saved as {output_path}")
     except Exception as e:
         print(f"Error creating QR code: {e}")

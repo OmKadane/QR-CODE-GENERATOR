@@ -94,7 +94,10 @@ def generate_qr():
             return jsonify({'error': 'URL is required'}), 400
 
         # Generate unique filename
-        filename = f"qrcode_{uuid.uuid4().hex}.png"
+        base_name = url.replace("https://", "").replace("http://", "").replace("www.", "").strip().rstrip("/")
+        base_name = base_name.split('/')[0]
+        filename = f"{base_name}.png"
+
         filepath = os.path.join('static/qrcodes', filename)
         
         logger.debug(f"Generating QR code at path: {filepath}")
@@ -114,7 +117,8 @@ def generate_qr():
 
         return jsonify({
             'success': True,
-            'qrcode_url': f'/static/qrcodes/{filename}'
+            'qrcode_url': f'/static/qrcodes/{filename}',
+            'filename': filename            
         })
 
     except Exception as e:
