@@ -1,4 +1,3 @@
-# Import libraries
 import qrcode
 from PIL import Image, ImageDraw, ImageFont
 import requests
