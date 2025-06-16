@@ -292,7 +292,6 @@
             
             qrImage.src = data.qrcode_url + '?t=' + new Date().getTime();
             downloadLink.href = data.qrcode_url;
-            downloadLink.setAttribute('download', data.filename || 'qrcode.png');  // 🔥 added line
 
             qrFormContainer.classList.add('hidden');
             resultDiv.classList.remove('hidden');
