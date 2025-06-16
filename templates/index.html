@@ -10,27 +10,14 @@
         body {
             margin: 0;
             padding: 0;
-            height: 100%; /* Ensure full height */
-            width: 100%; /* Ensure full width */
-            box-sizing: border-box; /* Add border-box for consistent sizing */
+            height: 100%;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         body {
-            /* min-height: 100vh; Removed, height: 100% on html,body handles this */
-            position: relative;
-            background-image: url('{{ url_for("static", filename="videos/Background.gif") }}');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            display: flex;
-            justify-content: flex-end; /* Changed to flex-end to align to the right */
             align-items: center;
-            /* animation: gradient 15s ease infinite; */
         }
-
-        /* @keyframes gradient removed as not applicable with GIF background */
-
-        /* #gifBackground styles removed */
 
         .overlay {
             position: fixed;
@@ -38,14 +25,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.3); /* Reverted to original opacity */
+            background: rgba(0, 0, 0, 0.3);
             z-index: -1;
         }
 
         .content-wrapper {
             position: relative;
             z-index: 1;
-            margin-right: 5%; /* Add some margin from the right edge */
+            margin-right: 5%;
         }
 
         .qr-container {
@@ -70,8 +57,6 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 1.5rem;
-            /* width: 100%; Removed - handled by html class */
-            /* padding: 1.5rem; Removed - handled by html class */
         }
 
         .qr-input-form {
@@ -92,12 +77,12 @@
         }
 
         .qr-main-interface {
-            position: relative; /* Added for positioning context */
-            min-height: 450px; /* Example height, adjust as needed */
-            max-width: 48rem; /* Equivalent to max-w-2xl */
+            position: relative;
+            min-height: 450px;
+            max-width: 48rem;
             width: 100%;
-            margin-left: auto; /* mx-auto equivalent */
-            margin-right: auto; /* mx-auto equivalent */
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .rainbow-text {
@@ -120,7 +105,6 @@
             white-space: nowrap;
         }
 
-        /* Add new styles for the copyright notice */
         .copyright {
             position: fixed;
             bottom: 10px;
@@ -130,7 +114,6 @@
             z-index: 2;
         }
 
-        /* Update logo container styles */
         .logo-container {
             text-align: center;
             margin-top: -2rem;
@@ -148,7 +131,6 @@
             object-fit: contain;
         }
 
-        /* Add styles for the title gif */
         .title-gif {
             position: fixed;
             top: -5px;
@@ -170,8 +152,8 @@
             height: auto;
             z-index: 5;
             cursor: pointer;
-            opacity: 0; /* Start hidden */
-            pointer-events: none; /* Disable click events when hidden */
+            opacity: 0;
+            pointer-events: none;
         }
 
         .title-text.visible {
@@ -179,7 +161,6 @@
             pointer-events: auto;
         }
 
-        /* Add styles for the subtitle gif */
         .subtitle-gif {
             position: fixed;
             top: 120px;
@@ -193,19 +174,13 @@
             background: transparent;
         }
 
-        #result .form-container {
+        .form-container {
             max-height: 400px;
             padding: 1rem;
         }
     </style>
 </head>
 <body>
-    <!-- <img id="gifBackground" 
-         src="{{ url_for('static', filename='videos/Background.gif') }}" 
-         alt="Background"
-         onerror="console.error('Failed to load GIF:', this.src)"
-         onload="console.log('GIF loaded successfully:', this.src)">
-    -->
     <div class="overlay"></div>
     <img src="{{ url_for('static', filename='images/RainbowTitle.gif') }}" alt="Rainbow Title" class="title-gif" id="rainbowTitle" onclick="showQRGenerator()">
     <img src="{{ url_for('static', filename='images/RainbowTitleText.png') }}" alt="Rainbow Title Text" class="title-text" onclick="showQRGenerator()">
@@ -257,87 +232,81 @@
     </div>
     <div class="copyright">Copyright © 2025 Rainbow. All rights reserved.</div>
 
-    <script>
-        function showQRGenerator() {
-            const qrFormContainer = document.getElementById('qrFormContainer');
-            const resultDiv = document.getElementById('result');
-            const errorDiv = document.getElementById('error');
-            const titleText = document.querySelector('.title-text');
-            
-            // Show the QR Generator interface
-            qrFormContainer.classList.remove('hidden');
-            // Hide the QR Code result
-            resultDiv.classList.add('hidden');
-            // Hide any error messages
-            errorDiv.classList.add('hidden');
-            // Hide the title text
-            titleText.classList.remove('visible');
-            // Clear the form
-            document.getElementById('qrForm').reset();
-        }
+<script>
+    function showQRGenerator() {
+        const qrFormContainer = document.getElementById('qrFormContainer');
+        const resultDiv = document.getElementById('result');
+        const errorDiv = document.getElementById('error');
+        const titleText = document.querySelector('.title-text');
+        
+        qrFormContainer.classList.remove('hidden');
+        resultDiv.classList.add('hidden');
+        errorDiv.classList.add('hidden');
+        titleText.classList.remove('visible');
+        document.getElementById('qrForm').reset();
+    }
 
-        // Show title text when QR code is generated
-        document.getElementById('qrForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const url = document.getElementById('url').value;
-            const logo = document.getElementById('logo').value;
-            const resultDiv = document.getElementById('result');
-            const errorDiv = document.getElementById('error');
-            const qrFormContainer = document.getElementById('qrFormContainer');
-            const submitButton = document.querySelector('button[type="submit"]');
-            const titleText = document.querySelector('.title-text');
-            
-            submitButton.disabled = true;
-            submitButton.innerHTML = 'Generating QR Code...👀';
-            resultDiv.classList.add('hidden');
-            errorDiv.classList.add('hidden');
-            
-            try {
-                const response = await fetch('/generate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams({
-                        url: url,
-                        logo: logo
-                    })
-                });
+    document.getElementById('qrForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const url = document.getElementById('url').value;
+        const logo = document.getElementById('logo').value;
+        const resultDiv = document.getElementById('result');
+        const errorDiv = document.getElementById('error');
+        const qrFormContainer = document.getElementById('qrFormContainer');
+        const submitButton = document.querySelector('button[type="submit"]');
+        const titleText = document.querySelector('.title-text');
+        
+        submitButton.disabled = true;
+        submitButton.innerHTML = 'Generating QR Code...👀';
+        resultDiv.classList.add('hidden');
+        errorDiv.classList.add('hidden');
+        
+        try {
+            const response = await fetch('/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    url: url,
+                    logo: logo
+                })
+            });
 
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(data.error || 'Failed to generate QR code');
-                }
-                
-                if (data.error) {
-                    errorDiv.classList.remove('hidden');
-                    errorDiv.querySelector('span').textContent = data.error;
-                    resultDiv.classList.add('hidden');
-                    return;
-                }
-
-                const qrImage = document.getElementById('qrImage');
-                const downloadLink = document.getElementById('downloadLink');
-                
-                qrImage.src = data.qrcode_url + '?t=' + new Date().getTime();
-                downloadLink.href = data.qrcode_url;
-                
-                qrFormContainer.classList.add('hidden');
-                resultDiv.classList.remove('hidden');
-                errorDiv.classList.add('hidden');
-                // Show the title text when QR code is displayed
-                titleText.classList.add('visible');
-            } catch (error) {
-                errorDiv.classList.remove('hidden');
-                errorDiv.querySelector('span').textContent = error.message || 'An error occurred while generating the QR code.';
-                resultDiv.classList.add('hidden');
-            } finally {
-                submitButton.disabled = false;
-                submitButton.innerHTML = 'Generate QR Code';
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to generate QR code');
             }
-        });
-    </script>
+            
+            if (data.error) {
+                errorDiv.classList.remove('hidden');
+                errorDiv.querySelector('span').textContent = data.error;
+                resultDiv.classList.add('hidden');
+                return;
+            }
+
+            const qrImage = document.getElementById('qrImage');
+            const downloadLink = document.getElementById('downloadLink');
+            
+            qrImage.src = data.qrcode_url + '?t=' + new Date().getTime();
+            downloadLink.href = data.qrcode_url;
+            downloadLink.setAttribute('download', data.filename || 'qrcode.png');  // 🔥 added line
+
+            qrFormContainer.classList.add('hidden');
+            resultDiv.classList.remove('hidden');
+            errorDiv.classList.add('hidden');
+            titleText.classList.add('visible');
+        } catch (error) {
+            errorDiv.classList.remove('hidden');
+            errorDiv.querySelector('span').textContent = error.message || 'An error occurred while generating the QR code.';
+            resultDiv.classList.add('hidden');
+        } finally {
+            submitButton.disabled = false;
+            submitButton.innerHTML = 'Generate QR Code';
+        }
+    });
+</script>
 </body>
 </html> 
