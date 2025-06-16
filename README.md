@@ -14,7 +14,7 @@ A beautiful web application that generates rainbow-colored QR codes with optiona
 
 1. Clone this repository:
 ```bash
-git clone <repository-url>
+git clone <https://github.com/OmKadane/QR-CODE-GENERATOR.git>
 cd QR-Code-Generator
 ```
 
