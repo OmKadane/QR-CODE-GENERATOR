@@ -4,6 +4,7 @@ from qr_code import create_rainbow_qr_code
 import uuid
 import time
 import logging
+import re
 
 app = Flask(__name__, 
     static_folder='static',
@@ -17,6 +18,15 @@ logger = logging.getLogger(__name__)
 # Ensure the static directories exist
 os.makedirs('static/qrcodes', exist_ok=True)
 os.makedirs('static/videos', exist_ok=True)
+
+def sanitize_filename(filename):
+    # Remove invalid characters and replace spaces with underscores
+    sanitized = re.sub(r'[<>:"/\\|?*]', '', filename)
+    sanitized = sanitized.replace(' ', '_')
+    # Ensure the filename ends with .png
+    if not sanitized.endswith('.png'):
+        sanitized += '.png'
+    return sanitized
 
 @app.route('/')
 def home():
@@ -86,15 +96,20 @@ def generate_qr():
     try:
         url = request.form.get('url')
         logo_url = request.form.get('logo') or None
+        custom_filename = request.form.get('filename')
         
-        logger.debug(f"Received request - URL: {url}, Logo URL: {logo_url}")
+        logger.debug(f"Received request - URL: {url}, Logo URL: {logo_url}, Filename: {custom_filename}")
         
         if not url:
             logger.error("No URL provided")
             return jsonify({'error': 'URL is required'}), 400
 
         # Generate unique filename
-        filename = f"qrcode_{uuid.uuid4().hex}.png"
+        if custom_filename:
+            filename = sanitize_filename(custom_filename)
+        else:
+            filename = f"qrcode_{uuid.uuid4().hex}.png"
+            
         filepath = os.path.join('static/qrcodes', filename)
         
         logger.debug(f"Generating QR code at path: {filepath}")
@@ -114,11 +129,24 @@ def generate_qr():
 
         return jsonify({
             'success': True,
-            'qrcode_url': f'/static/qrcodes/{filename}'         
+            'qrcode_url': f'/static/qrcodes/{filename}',
+            'filename': filename
         })
 
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/download/<path:filename>')
+def download_qr(filename):
+    try:
+        return send_file(
+            os.path.join('static/qrcodes', filename),
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        logger.error(f"Error downloading QR code: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 # Clean up old QR codes periodically
@@ -129,7 +157,6 @@ def cleanup_old_qrcodes():
         if os.path.exists(qrcode_dir):
             for file in os.listdir(qrcode_dir):
                 file_path = os.path.join(qrcode_dir, file)
-                # Remove files older than 1 hour
                 if os.path.getmtime(file_path) < (time.time() - 3600):
                     os.remove(file_path)
     except Exception as e:
